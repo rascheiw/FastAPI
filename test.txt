@@ -1,0 +1,130 @@
+#Commande pour vérifier que l'API est fonctionnelle mais sans s'authentifier qui va retouner une erreur {"detail":"Not authenticated"}
+curl -X GET http://127.0.0.1:8000/ 
+
+#Commande pour vérifier que l'API est fonctionnelle en s'authentifiant avec le mauvais utilisateur qui va retourner une erreur {"detail":"Invalid authentication credentials"}
+curl -X GET http://127.0.0.1:8000/ \
+  -H 'Authorization: Basic ZGF26NGRtMU4='
+
+#Commande pour vérifier que l'API est fonctionnelle en tant qu'utilisateur clementine {"message":"l'API est fonctionnelle"}
+curl -X GET http://127.0.0.1:8000/ \
+  -H 'Authorization: Basic Y2xlbWVudGluZTptYW5kYXJpbmU='
+
+
+#Commande pour générer un QCM de 7 questions qui va retourner une erreur {"detail":"Le nombre de questions n'est pas valide. Il doit être de 5, 10 ou 20."}
+curl -X 'POST' \
+  'http://127.0.0.1:8000/questions/random/item' \
+  -H 'Authorization: Basic Y2xlbWVudGluZTptYW5kYXJpbmU=' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "use": "Test de validation",
+  "subjects": [
+    "Classification", "Systèmes distribués", "Sytèmes distribués", "Automation", "Streaming de données"
+  ],
+  "question_count": 7
+}'
+
+#Commande pour générer un QCM de 10 questions avec le use "Test" qui va retourner une erreur {"detail":"Cas d'usage non valide. Doit être l'un des éléments suivants : Test de positionnement, Test de validation, Total Bootcamp"}
+curl -X 'POST' \
+  'http://127.0.0.1:8000/questions/random/item' \
+  -H 'Authorization: Basic Y2xlbWVudGluZTptYW5kYXJpbmU=' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "use": "Test",
+  "subjects": [
+    "Classification", "Systèmes distribués", "Sytèmes distribués", "Automation", "Streaming de données"
+  ],
+  "question_count": 10
+}'
+
+#Commande pour générer un QCM de 10 questions avec le use "Test de validation" et le sujet "test" qui va retourner une erreur {"detail":"Sujet(s) non valide. Doit être l'un des éléments suivants : Classification, Systèmes distribués, Sytèmes distribués, Automation, Streaming de données"}
+curl -X 'POST' \
+  'http://127.0.0.1:8000/questions/random/item' \
+  -H 'Authorization: Basic Y2xlbWVudGluZTptYW5kYXJpbmU=' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "use": "Test de validation",
+  "subjects": [
+    "test"
+  ],
+  "question_count": 10
+}'
+
+
+# Commande pour générer un QCM de 10 questions avec le use "Test de validation" et les sujets 
+# "Classification", "Systèmes distribués", "Sytèmes distribués", "Automation", "Streaming de données"
+# utilisateur clementine
+curl -X 'POST' \
+  'http://127.0.0.1:8000/questions/random/item' \
+  -H 'Authorization: Basic Y2xlbWVudGluZTptYW5kYXJpbmU=' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "use": "Test de validation",
+  "subjects": [
+    "Classification", "Systèmes distribués", "Sytèmes distribués", "Automation", "Streaming de données"
+  ],
+  "question_count": 10
+}'
+
+
+
+#commande pour ajouter une question à la base de données questions_db avec l'utlisateur clementine qui va retourner une erreur {"detail":"Unauthorized"}
+curl -X 'POST' \
+  'http://127.0.0.1:8000/questions/create' \
+  -H 'Authorization: Basic Y2xlbWVudGluZTptYW5kYXJpbmU=' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "question": "Quel est le premier président de la cinquième république",
+  "subject": "Histoire",
+  "correct": [
+      "A"
+  ],
+  "use": "Test de culture générale",
+  "responseA": "Charles De Gaulle",
+  "responseB": "François Mitterand",
+  "responseC": "René Coty",
+  "responseD": "Raymond Poincaré"
+  }'
+
+#commande pour ajouter une question à la base de données questions_db, l'API doit retourner l'ensemble de toutes les questions avec la nouvelle question ajoutée en fin de sortie
+#utlisateur david
+curl -X 'POST' \
+  'http://127.0.0.1:8000/questions/create' \
+  -H 'Authorization: Basic ZGF2aWQ6NGRtMU4=' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "question": "Quel est le premier président de la cinquième république",
+  "subject": "Histoire",
+  "correct": [
+      "A"
+  ],
+  "use": "Test de culture générale",
+  "responseA": "Charles De Gaulle",
+  "responseB": "François Mitterand",
+  "responseC": "René Coty",
+  "responseD": "Raymond Poincaré"
+  }'
+
+#si on execute cette commande une nouvelle fois, l'API doit renvoyer une erreur {"detail":"La question existe déjà"}
+curl -X 'POST' \
+  'http://127.0.0.1:8000/questions/create' \
+  -H 'Authorization: Basic ZGF2aWQ6NGRtMU4=' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "question": "Quel est le premier président de la cinquième république",
+  "subject": "Histoire",
+  "correct": [
+      "A"
+  ],
+  "use": "Test de culture générale",
+  "responseA": "Charles De Gaulle",
+  "responseB": "François Mitterand",
+  "responseC": "René Coty",
+  "responseD": "Raymond Poincaré"
+  }'
