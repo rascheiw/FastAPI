@@ -26,7 +26,7 @@ api = FastAPI(
     }
     ]
     )
-#auth = HTTPBasicAuth()
+
 security = HTTPBasic()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -56,25 +56,6 @@ users = {
         "hashed_password": pwd_context.hash('4dm1N'),
     }
 }
-# Identifiants pour l'authentification
-#users_db = {
-#    "alice": {
-#        'password' : generate_password_hash("wonderland"),
-#        'role' : 'user'
-#    },
-#    "bob": {
-#        'password' : generate_password_hash("builder"),
-#        'role' : 'user'
-#    },
-#    "clementine": {
-#        'password' : generate_password_hash("mandarine"),
-#        'role' : 'user'
-#    },
-#    "david": {
-#        'password' : generate_password_hash("4dm1N"),
-#        'role' : ['admin', 'user']
-#    }
-#}
 
 # fonction formulaire d'authentification et de vérification d'identifiants
 def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
